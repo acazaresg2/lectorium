@@ -3,11 +3,11 @@
 **Proyecto: Aplicación móvil Local-First para aprendizaje de idiomas mediante lectura**
 
 Versión consolidada para inicio de generación de código con Codex\
-Fecha de corte: 21 de agosto de 2026
+Fecha de corte: 24 de agosto de 2026
 
 **\
 ESTADO ACTUAL\**
-Pasos 1 del roadmap completados. El entorno base del Paso 2 está preparado, pero la implementación de la estructura canónica del proyecto todavía está pendiente. El Paso 2 es el siguiente paso de implementación.\
+Pasos 1-2 del roadmap completados. El Paso 3 es el siguiente paso de implementación.
 \
 Reader Contract V1 es la única fuente de verdad técnica del lector.
 
@@ -25,10 +25,10 @@ La arquitectura del lector queda gobernada por Reader Contract V1 v1.0. Los prot
 | Arquitectura Local-First | Cerrada | Este documento |
 | Reader Contract V1 | Cerrado v1.0 | Reader Contract V1, sección 4 |
 | Proyecto Expo | Creado | Repositorio real |
-| Expo Router + TypeScript | Entorno preparado / Implementación pendiente | Repositorio real |
+| Expo Router + TypeScript | Configurado | Repositorio real |
 | Git + GitHub | Configurados / Vinculado | Repositorio real |
-| Estructura canónica del proyecto | Pendiente / siguiente paso | Este documento |
-| EPUB de laboratorio | Bloqueado por Paso 2 | Fixture del proyecto |
+| Estructura canónica del proyecto | Creado | Repositorio real |
+| EPUB de laboratorio | Pendiente / siguiente paso | Fixture del proyecto |
 | Prototipo EPUB + WebView + epub.js | Bloqueado por Paso 3 | Código del repositorio |
 | ReaderBridge integrado | Bloqueado por Paso 4 | Roadmap, paso 5 |
 | Selección + contexto | Pendiente | Roadmap, paso 6 |
@@ -508,8 +508,8 @@ Debe empaquetarse como EPUB válido con mimetype sin compresión. Antes de consi
 | **Paso** | **Estado** | **Alcance** |
 |----|----|----|
 | 1\. Reader Contract V1 | COMPLETADO | Contrato v1.0 cerrado. |
-| 2\. Proyecto Expo + estructura | SIGUIENTE | Implementación de carpetas app/, src/, assets/ y tsconfig.json. |
-| 3\. EPUB de laboratorio | BLOQUEADO POR PASO 2 | Fixture local permanente. |
+| 2\. Proyecto Expo + estructura | COMPLETADO | Implementación de carpetas app/, src/, assets/ y tsconfig.json. |
+| 3\. EPUB de laboratorio | SIGUIENTE | Fixture local permanente. |
 | 4\. Prototipo técnico mínimo | BLOQUEADO POR PASO 3 | Expo + RN + WebView + epub.js con dependencias locales; prueba de renderizado. |
 | 5\. ReaderBridge | BLOQUEADO POR PASO 4 | Implementar bridge según contrato único, RequestTracker, timeout, versión y eventos. |
 | 6\. Selección + contexto | BLOQUEADO | TextSelection, SelectionRect, contexto y limpieza de selección. |
@@ -588,7 +588,7 @@ Cada tarea enviada a Codex debe indicar explícitamente los siguientes campos:
 
 # 20. Instrucciones para cualquier IA o desarrollador que reciba este documento {#instrucciones-para-cualquier-ia-o-desarrollador-que-reciba-este-documento}
 
-Este documento se debe tratar como el estado consolidado del proyecto a fecha 21 de agosto de 2026. La regla principal es no inferir que fragmentos históricos del documento anterior siguen vigentes. Los bloques marcados como ejemplo, stub o pendiente no constituyen funcionalidades implementadas.
+Este documento se debe tratar como el estado consolidado del proyecto a fecha 24 de agosto de 2026. La regla principal es no inferir que fragmentos históricos del documento anterior siguen vigentes. Los bloques marcados como ejemplo, stub o pendiente no constituyen funcionalidades implementadas.
 
 Este documento constituye la fuente de verdad técnica del proyecto.
 
@@ -605,11 +605,9 @@ Antes de modificar el código:
 
 El Paso 1 - Reader Contract V1 está completado.
 
-El Paso 2 - Expo + estructura es el siguiente paso de implementación.
+El Paso 2 - Expo + estructura está completado.
 
-El entorno base de Expo, Expo Router, TypeScript y React Native WebView ya está preparado, pero la estructura canónica del proyecto todavía debe implementarse.
-
-El Paso 3 - EPUB de laboratorio permanece bloqueado hasta completar y validar el Paso 2.
+El Paso 3 - EPUB de laboratorio es el siguiente paso oficial de implementación.
 
 El Paso 4 - Prototipo técnico mínimo permanece bloqueado hasta completar y validar el Paso 3.
 
