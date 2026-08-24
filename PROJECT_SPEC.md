@@ -7,7 +7,7 @@ Fecha de corte: 21 de agosto de 2026
 
 **\
 ESTADO ACTUAL\**
-Fases 1--4 del roadmap completadas. Fase 5 es el siguiente paso de implementación.\
+Fases 1--2 del roadmap completadas. Fase 3 es el siguiente paso de implementación.\
 \
 Reader Contract V1 es la única fuente de verdad técnica del lector.
 
@@ -508,11 +508,11 @@ Debe empaquetarse como EPUB válido con mimetype sin compresión. Antes de consi
 |----|----|----|
 | 1\. Reader Contract V1 | COMPLETADO | Contrato v1.0 cerrado. |
 | 2\. Proyecto Expo + estructura | COMPLETADO | Expo, TypeScript, Router, estructura, Git y GitHub. |
-| 3\. EPUB de laboratorio | COMPLETADO | Fixture local permanente. |
-| 4\. Prototipo técnico mínimo | COMPLETADO | Expo + RN + WebView + epub.js con dependencias locales; prueba de renderizado. |
-| 5\. ReaderBridge | SIGUIENTE | Implementar bridge según contrato único, RequestTracker, timeout, versión y eventos. |
-| 6\. Selección + contexto | PENDIENTE | TextSelection, SelectionRect, contexto y limpieza de selección. |
-| 7\. CFI + persistencia | PENDIENTE | BookProgressRepository, persistencia de EPUB y ciclo de vida. |
+| 3\. EPUB de laboratorio | SIGUIENTE | Fixture local permanente. |
+| 4\. Prototipo técnico mínimo | BLOQUEADO POR PASO 3 | Expo + RN + WebView + epub.js con dependencias locales; prueba de renderizado. |
+| 5\. ReaderBridge | BLOQUEADO POR PASO 4 | Implementar bridge según contrato único, RequestTracker, timeout, versión y eventos. |
+| 6\. Selección + contexto | BLOQUEADO | TextSelection, SelectionRect, contexto y limpieza de selección. |
+| 7\. CFI + persistencia | BLOQUEADO | BookProgressRepository, persistencia de EPUB y ciclo de vida. |
 | 8\. TXTEngine | PENDIENTE | Codificaciones, párrafos, offsets y persistencia TXT. |
 | 9\. TranslationPanel | PENDIENTE | Primero TranslationService mínimo; luego UI nativa. |
 | 10\. TTS | PENDIENTE | SpeechService + expo-speech. |
@@ -538,14 +538,14 @@ Codex debe trabajar por tareas pequeñas, verificables y alineadas al contrato. 
 
 Ejemplo de tarea para Codex\
 \
-Objetivo: implementar el paso 5, ReaderBridge.\
+Objetivo: implementar exclusivamente el paso indicado en la tarea actual.\
 Fuente de verdad: Reader Contract V1, sección 6 de este documento.\
+No avanzar automáticamente al siguiente paso del roadmap.\
+Cada tarea debe especificar alcance, archivos permitidos, archivos que no deben modificarse, criterios de terminado y pruevas esperadas.\
 No modificar: nombres de comandos/eventos ni payloads contractuales.\
-Debe incluir: RequestTracker, timeout configurable, validación de protocolVersion,\
-correlación por requestId y suscripciones a eventos espontáneos.\
 No incluir: highlights, IA, traducción, SQLite ni comandos fuera del contrato.\
-Criterio de terminado: TypeScript compila y las pruebas del bridge cubren timeout,\
-correlación, mismatch de protocolo, cola antes de READER_READY y cleanup.
+Si encuentra una discrepancia entre el repositorio y este documento, debe reportarla antes de resolverla, salvo que la tarea autorice explícitamente la corrección.\
+No introducir funcionalidades de pasos posteriores.
 
 # 18. Criterios de consistencia antes de avanzar {#criterios-de-consistencia-antes-de-avanzar}
 
