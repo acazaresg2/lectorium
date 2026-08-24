@@ -7,7 +7,7 @@ Fecha de corte: 21 de agosto de 2026
 
 **\
 ESTADO ACTUAL\**
-Fases 1--2 del roadmap completadas. Fase 3 es el siguiente paso de implementación.\
+Pasos 1 del roadmap completados. El entorno base del Paso 2 está preparado, pero la implementación de la estructura canónica del proyecto todavía está pendiente. El Paso 2 es el siguiente paso de implementación.\
 \
 Reader Contract V1 es la única fuente de verdad técnica del lector.
 
@@ -25,11 +25,12 @@ La arquitectura del lector queda gobernada por Reader Contract V1 v1.0. Los prot
 | Arquitectura Local-First | Cerrada | Este documento |
 | Reader Contract V1 | Cerrado v1.0 | Reader Contract V1, sección 4 |
 | Proyecto Expo | Creado | Repositorio real |
-| Expo Router + TypeScript | Configurados | Repositorio real |
-| Git + GitHub | Configurados | Repositorio real |
-| EPUB de laboratorio | Completado | Fixture del proyecto |
-| Prototipo EPUB + WebView + epub.js | Completado | Código del repositorio |
-| ReaderBridge integrado | Pendiente / siguiente fase | Roadmap, paso 5 |
+| Expo Router + TypeScript | Entorno preparado / Implementación pendiente | Repositorio real |
+| Git + GitHub | Configurados / Vinculado | Repositorio real |
+| Estructura canónica del proyecto | Pendiente / siguiente paso | Este documento |
+| EPUB de laboratorio | Bloqueado por Paso 2 | Fixture del proyecto |
+| Prototipo EPUB + WebView + epub.js | Bloqueado por Paso 3 | Código del repositorio |
+| ReaderBridge integrado | Bloqueado por Paso 4 | Roadmap, paso 5 |
 | Selección + contexto | Pendiente | Roadmap, paso 6 |
 | Persistencia CFI | Pendiente | Roadmap, paso 7 |
 | TXTEngine | Pendiente | Roadmap, paso 8 |
@@ -507,8 +508,8 @@ Debe empaquetarse como EPUB válido con mimetype sin compresión. Antes de consi
 | **Paso** | **Estado** | **Alcance** |
 |----|----|----|
 | 1\. Reader Contract V1 | COMPLETADO | Contrato v1.0 cerrado. |
-| 2\. Proyecto Expo + estructura | COMPLETADO | Expo, TypeScript, Router, estructura, Git y GitHub. |
-| 3\. EPUB de laboratorio | SIGUIENTE | Fixture local permanente. |
+| 2\. Proyecto Expo + estructura | SIGUIENTE | Implementación de carpetas app/, src/, assets/ y tsconfig.json. |
+| 3\. EPUB de laboratorio | BLOQUEADO POR PASO 2 | Fixture local permanente. |
 | 4\. Prototipo técnico mínimo | BLOQUEADO POR PASO 3 | Expo + RN + WebView + epub.js con dependencias locales; prueba de renderizado. |
 | 5\. ReaderBridge | BLOQUEADO POR PASO 4 | Implementar bridge según contrato único, RequestTracker, timeout, versión y eventos. |
 | 6\. Selección + contexto | BLOQUEADO | TextSelection, SelectionRect, contexto y limpieza de selección. |
@@ -522,30 +523,30 @@ Debe empaquetarse como EPUB válido con mimetype sin compresión. Antes de consi
 
 Codex debe trabajar por tareas pequeñas, verificables y alineadas al contrato. No debe recibir como instrucción genérica construir toda la aplicación.
 
-- Antes de modificar Reader, leer este documento y usar Reader Contract V1 como autoridad.
+Cada tarea enviada a Codex debe indicar explícitamente los siguientes campos:
+1. **Objetivo:** Qué se va a construir en la tarea actual.
+2. **Paso del roadmap:** A qué paso específico pertenece.
+3. **Archivos que puede crear o modificar:** Alcance delimitado de archivos y directorios permitidos.
+4. **Archivos que NO debe modificar:** Archivos protegidos de configuración, documentación o componentes de otros pasos.
+5. **Criterios de terminado:** Condiciones obligatorias para considerar finalizada la tarea.
+6. **Validaciones que debe ejecutar:** Pruebas y verificaciones de compilación o ejecución.
+7. **Resultado esperado:** Informe final de cambios y commit exclusivo en Git.
 
-- No crear alias de comandos ni eventos para compatibilidad con código histórico.
 
-- No introducir dependencias remotas o CDN.
+### Ejemplo y plantilla canónica de tarea para Codex
 
-- No crear código V2/V3 salvo interfaces explícitamente marcadas como stubs.
-
-- Cada tarea debe incluir definición de terminado, archivos permitidos y pruebas esperadas.
-
-- Cada paso cerrado debe quedar en un commit coherente y subir a GitHub.
-
-- Si el código existente contradice este documento, corregir el código para cumplir la especificación y señalar la incompatibilidad encontrada.
-
-Ejemplo de tarea para Codex\
-\
-Objetivo: implementar exclusivamente el paso indicado en la tarea actual.\
-Fuente de verdad: Reader Contract V1, sección 6 de este documento.\
-No avanzar automáticamente al siguiente paso del roadmap.\
-Cada tarea debe especificar alcance, archivos permitidos, archivos que no deben modificarse, criterios de terminado y pruevas esperadas.\
-No modificar: nombres de comandos/eventos ni payloads contractuales.\
-No incluir: highlights, IA, traducción, SQLite ni comandos fuera del contrato.\
-Si encuentra una discrepancia entre el repositorio y este documento, debe reportarla antes de resolverla, salvo que la tarea autorice explícitamente la corrección.\
-No introducir funcionalidades de pasos posteriores.
+- **Objetivo:** Implementar exclusivamente las funcionalidades requeridas por el paso actual.
+- **Paso del roadmap:** [Número y nombre del paso actual].
+- **Fuente de verdad:** `PROJECT_SPEC.md` (especialmente Reader Contract V1, sección 6) y `docs/PROJECT_CONTEXT.md`.
+- **Archivos que puede crear o modificar:** [Lista explícita de archivos o carpetas permitidas].
+- **Archivos que NO debe modificar:** `PROJECT_SPEC.md`, `docs/PROJECT_CONTEXT.md`, ni nombres de comandos/eventos o payloads contractuales.
+- **Restricciones y reglas de desarrollo:**
+  - No avanzar automáticamente al siguiente paso del roadmap ni introducir funcionalidades de pasos posteriores (como SQLite, IA, traducción, TTS o highlights).
+  - No introducir dependencias remotas o CDNs.
+  - Si encuentra una discrepancia entre el repositorio y esta especificación, debe reportarla antes de resolverla (salvo autorización explícita).
+- **Criterios de terminado:** El código compila sin errores de TypeScript, cumple estrictamente con el paso asignado y no deja código o dependencias huérfanas.
+- **Validaciones que debe ejecutar:** Ejecutar verificaciones de sintaxis, compilación de TypeScript y resolución de rutas en Expo Router.
+- **Resultado esperado:** Un commit exclusivo y verificado en Git para el paso actual, junto con un informe que detalle: archivos creados/modificados, dependencias tocadas, comandos ejecutados y resultados de las validaciones.
 
 # 18. Criterios de consistencia antes de avanzar {#criterios-de-consistencia-antes-de-avanzar}
 
@@ -567,6 +568,10 @@ No introducir funcionalidades de pasos posteriores.
 
 - El WebView no toca SQLite ni servicios de negocio.
 
+- La estructura de directorios (app/, src/reader/, assets/libs/) existe físicamente en el repositorio.
+
+- tsconfig.json está presente y valida la compilación TypeScript.
+
 - La compilación puede continuar aunque un módulo futuro esté representado por una interfaz/stub compilable.
 
 # 19. Pendientes formales y límites {#pendientes-formales-y-límites}
@@ -585,7 +590,30 @@ No introducir funcionalidades de pasos posteriores.
 
 Este documento se debe tratar como el estado consolidado del proyecto a fecha 21 de agosto de 2026. La regla principal es no inferir que fragmentos históricos del documento anterior siguen vigentes. Los bloques marcados como ejemplo, stub o pendiente no constituyen funcionalidades implementadas.
 
-El siguiente paso oficial es implementar ReaderBridge. No se debe saltar directamente a traducción, IA, highlights ni sincronización. El objetivo inmediato es dejar cerrada y probada la frontera WebView ↔ React Native conforme al contrato único.
+Este documento constituye la fuente de verdad técnica del proyecto.
+
+Antes de modificar el código:
+
+1. Leer PROJECT_SPEC.md completo.
+2. Leer docs/PROJECT_CONTEXT.md.
+3. Identificar el estado actual del roadmap.
+4. Respetar las dependencias y bloqueos establecidos.
+5. No implementar funcionalidades pertenecientes a pasos posteriores.
+6. No introducir dependencias, protocolos o arquitecturas que contradigan este documento sin autorización.
+
+## Estado actual
+
+El Paso 1 - Reader Contract V1 está completado.
+
+El Paso 2 - Expo + estructura es el siguiente paso de implementación.
+
+El entorno base de Expo, Expo Router, TypeScript y React Native WebView ya está preparado, pero la estructura canónica del proyecto todavía debe implementarse.
+
+El Paso 3 - EPUB de laboratorio permanece bloqueado hasta completar y validar el Paso 2.
+
+El Paso 4 - Prototipo técnico mínimo permanece bloqueado hasta completar y validar el Paso 3.
+
+ReaderBridge y las funcionalidades posteriores no deben implementarse todavía.
 
 # Apéndice A. Mapa de responsabilidades del lector {#apéndice-a.-mapa-de-responsabilidades-del-lector}
 
