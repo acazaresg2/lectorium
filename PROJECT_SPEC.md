@@ -7,7 +7,7 @@ Fecha de corte: 24 de agosto de 2026
 
 **\
 ESTADO ACTUAL\**
-Pasos 1-2 del roadmap completados. El Paso 3 es el siguiente paso de implementación.
+Pasos 1-3 del roadmap completados. El Paso 4 es el siguiente paso de implementación.
 \
 Reader Contract V1 es la única fuente de verdad técnica del lector.
 
@@ -28,8 +28,8 @@ La arquitectura del lector queda gobernada por Reader Contract V1 v1.0. Los prot
 | Expo Router + TypeScript | Configurado | Repositorio real |
 | Git + GitHub | Configurados / Vinculado | Repositorio real |
 | Estructura canónica del proyecto | Creado | Repositorio real |
-| EPUB de laboratorio | Pendiente / siguiente paso | Fixture del proyecto |
-| Prototipo EPUB + WebView + epub.js | Bloqueado por Paso 3 | Código del repositorio |
+| EPUB de laboratorio | Creado | Repositorio real |
+| Prototipo EPUB + WebView + epub.js | Pendiente / siguiente paso | Código del repositorio |
 | ReaderBridge integrado | Bloqueado por Paso 4 | Roadmap, paso 5 |
 | Selección + contexto | Pendiente | Roadmap, paso 6 |
 | Persistencia CFI | Pendiente | Roadmap, paso 7 |
@@ -509,8 +509,8 @@ Debe empaquetarse como EPUB válido con mimetype sin compresión. Antes de consi
 |----|----|----|
 | 1\. Reader Contract V1 | COMPLETADO | Contrato v1.0 cerrado. |
 | 2\. Proyecto Expo + estructura | COMPLETADO | Implementación de carpetas app/, src/, assets/ y tsconfig.json. |
-| 3\. EPUB de laboratorio | SIGUIENTE | Fixture local permanente. |
-| 4\. Prototipo técnico mínimo | BLOQUEADO POR PASO 3 | Expo + RN + WebView + epub.js con dependencias locales; prueba de renderizado. |
+| 3\. EPUB de laboratorio | COMPLETADO | Fixture local permanente. |
+| 4\. Prototipo técnico mínimo | SIGUIENTE | Expo + RN + WebView + epub.js con dependencias locales; prueba de renderizado. |
 | 5\. ReaderBridge | BLOQUEADO POR PASO 4 | Implementar bridge según contrato único, RequestTracker, timeout, versión y eventos. |
 | 6\. Selección + contexto | BLOQUEADO | TextSelection, SelectionRect, contexto y limpieza de selección. |
 | 7\. CFI + persistencia | BLOQUEADO | BookProgressRepository, persistencia de EPUB y ciclo de vida. |
@@ -607,9 +607,9 @@ El Paso 1 - Reader Contract V1 está completado.
 
 El Paso 2 - Expo + estructura está completado.
 
-El Paso 3 - EPUB de laboratorio es el siguiente paso oficial de implementación.
+El Paso 3 - EPUB de laboratorio está completado.
 
-El Paso 4 - Prototipo técnico mínimo permanece bloqueado hasta completar y validar el Paso 3.
+El Paso 4 - Prototipo técnico mínimo es el siguiente paso oficial de implementación.
 
 ReaderBridge y las funcionalidades posteriores no deben implementarse todavía.
 
