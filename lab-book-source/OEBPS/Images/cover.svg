@@ -1,0 +1,44 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 400 600"
+    width="400"
+    height="600">
+
+  <rect width="400" height="600" fill="#263238"/>
+
+  <text
+      x="200"
+      y="150"
+      text-anchor="middle"
+      font-family="Georgia, serif"
+      font-size="32"
+      fill="#ffffff">
+    The Lost Key
+  </text>
+
+  <text
+      x="200"
+      y="195"
+      text-anchor="middle"
+      font-family="Georgia, serif"
+      font-size="23"
+      fill="#eeeeee">
+    La llave perdida
+  </text>
+
+  <circle
+      cx="200"
+      cy="330"
+      r="75"
+      fill="none"
+      stroke="#f5c542"
+      stroke-width="10"/>
+
+  <rect
+      x="190"
+      y="250"
+      width="20"
+      height="120"
+      fill="#f5c542"/>
+
+</svg>
