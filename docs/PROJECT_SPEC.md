@@ -414,86 +414,94 @@ contextualTranslate?:(input: unknown) =\> Promise\<unknown\>;\
 
 # 14. Estructura canónica de carpetas {#estructura-canónica-de-carpetas}
 
-app/\
-\_layout.tsx\
-index.tsx\
-onboarding/\
-welcome.tsx\
-name.tsx\
-languages.tsx\
-level.tsx\
-(tabs)/\
-library/index.tsx\
-vocabulary/index.tsx\
-calendar/index.tsx\
-stats/index.tsx\
-profile/index.tsx\
-vocabulary/review.tsx\
-reader/\[bookId\].tsx\
-\
-src/\
-reader/\
-ReaderScreen.tsx\
-ReaderController.ts\
-ReaderEngine.ts\
-engines/\
-EPUBEngine.ts\
-TXTEngine.ts\
-webview/\
-EPUBWebView.tsx\
-epub-webview-bundle/\
-index.html\
-bridge-client.ts\
-selection-handler.ts\
-TXTRenderer.tsx\
-bridge/\
-ReaderBridge.ts\
-messages.ts\
-requestTracker.ts\
-state/\
-readerState.ts\
-readerUIState.ts\
-types/\
-ReaderLocation.ts\
-TextSelection.ts\
-SelectionRect.ts\
-persistence/\
-progressPersistence.ts\
-\
-translation/\
-TranslationPanel/\
-TranslationPanel.tsx\
-TranslationPanel.mobile.tsx\
-TranslationPanel.tablet.tsx\
-useTranslationPanelState.ts\
-TranslationService.ts\
-providers/\
-LocalTranslationRepository.ts\
-RemoteTranslationProvider.ts\
-types.ts\
-\
-speech/SpeechService.ts\
-ai/AIService.ts\
-db/\
-client.ts\
-migrations/\
-001_v1_schema.ts\
-002_v2_schema.ts\
-003_v3_schema.ts\
-repositories/\
-\...un Repository por tabla V1\...\
-files/FileStorageService.ts\
-srs/{sm2.ts,SRSService.ts}\
-features/{library,vocabulary,calendar,stats,profile,onboarding}/\
-notifications/NotificationService.ts\
-shared/{components,hooks,theme,utils/{uuid.ts,dates.ts,encoding.ts}}\
-types/domain.ts\
-config/{env.ts,constants.ts}\
-\
-assets/\
-libs/{epub.min.js,jszip.min.js}\
-fixtures/lab-book.epub\
-demo-books/{beginner,elementary,intermediate}/
+/ (Raíz del proyecto)
+├── AGENTS.md                  # Reglas operativas y directivas para Codex
+├── app/                       # Rutas y pantallas de Expo Router
+│   ├── _layout.tsx
+│   ├── index.tsx
+│   ├── onboarding/
+│   │   ├── welcome.tsx
+│   │   ├── name.tsx
+│   │   ├── languages.tsx
+│   │   └── level.tsx
+│   ├── (tabs)/
+│   │   ├── library/index.tsx
+│   │   ├── vocabulary/index.tsx
+│   │   ├── calendar/index.tsx
+│   │   ├── stats/index.tsx
+│   │   └── profile/index.tsx
+│   ├── vocabulary/review.tsx
+│   └── reader/[bookId].tsx
+├── assets/                    # Assets estáticos y librerías locales
+│   ├── libs/{epub.min.js,jszip.min.js}
+│   ├── fixtures/lab-book.epub
+│   └── demo-books/{beginner,elementary,intermediate}/
+├── docs/                      # Repositorio de conocimiento del proyecto
+│   ├── INDEX.md               # Índice de navegación rápida (System of Record Index)
+│   ├── PROJECT_SPEC.md        # Especificación técnica global (Fuente de verdad)
+│   └── PROJECT_CONTEXT.md     # Detalle técnico de los Pasos 3 y 4
+├── scripts/                   # Automatización y construcción del entorno
+│   ├── build-lab-epub.py      # Script de generación del EPUB fixture
+│   └── lab-book-source/       # Insumos y fuentes descompiladas del EPUB
+├── src/                       # Lógica de negocio y componentes de la app
+│   ├── reader/
+│   │   ├── ReaderScreen.tsx
+│   │   ├── ReaderController.ts
+│   │   ├── ReaderEngine.ts
+│   │   ├── engines/
+│   │   │   ├── EPUBEngine.ts
+│   │   │   └── TXTEngine.ts
+│   │   ├── webview/
+│   │   │   ├── EPUBWebView.tsx
+│   │   │   ├── epub-webview-bundle/
+│   │   │   │   ├── index.html
+│   │   │   │   ├── bridge-client.ts
+│   │   │   │   └── selection-handler.ts
+│   │   │   └── TXTRenderer.tsx
+│   │   ├── bridge/
+│   │   │   ├── ReaderBridge.ts
+│   │   │   ├── messages.ts
+│   │   │   └── requestTracker.ts
+│   │   ├── state/
+│   │   │   ├── readerState.ts
+│   │   │   └── readerUIState.ts
+│   │   ├── types/
+│   │   │   ├── ReaderLocation.ts
+│   │   │   ├── TextSelection.ts
+│   │   │   └── SelectionRect.ts
+│   │   └── persistence/
+│   │       └── progressPersistence.ts
+│   ├── translation/
+│   │   ├── TranslationPanel/
+│   │   │   ├── TranslationPanel.tsx
+│   │   │   ├── TranslationPanel.mobile.tsx
+│   │   │   ├── TranslationPanel.tablet.tsx
+│   │   │   └── useTranslationPanelState.ts
+│   │   ├── TranslationService.ts
+│   │   ├── providers/
+│   │   │   ├── LocalTranslationRepository.ts
+│   │   │   └── RemoteTranslationProvider.ts
+│   │   └── types.ts
+│   ├── speech/SpeechService.ts
+│   ├── ai/AIService.ts
+│   ├── db/
+│   │   ├── client.ts
+│   │   ├── migrations/
+│   │   │   ├── 001_v1_schema.ts
+│   │   │   ├── 002_v2_schema.ts
+│   │   │   └── 003_v3_schema.ts
+│   │   └── repositories/
+│   │       └── ...un Repository por tabla V1...
+│   ├── files/FileStorageService.ts
+│   ├── srs/{sm2.ts,SRSService.ts}
+│   ├── features/{library,vocabulary,calendar,stats,profile,onboarding}/
+│   ├── notifications/NotificationService.ts
+│   ├── shared/{components,hooks,theme,utils/{uuid.ts,dates.ts,encoding.ts}}
+│   ├── types/domain.ts
+│   └── config/{env.ts,constants.ts}
+├── app.json
+├── package.json
+└── tsconfig.json
 
 Regla clave: app/ contiene rutas de Expo Router. La lógica de negocio vive en src/. Solo src/reader conoce detalles específicos de epub.js/WebView, y únicamente dentro de su subárbol.
 
