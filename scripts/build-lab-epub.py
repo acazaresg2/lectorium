@@ -4,7 +4,7 @@ import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 
-SOURCE = ROOT / "lab-book-source"
+SOURCE = ROOT / "scripts" / "lab-book-source"
 OUTPUT = ROOT / "assets" / "fixtures" / "lab-book.epub"
 
 REQUIRED = [

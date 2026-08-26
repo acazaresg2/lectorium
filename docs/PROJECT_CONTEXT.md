@@ -57,21 +57,22 @@ assets/
 ### 2.2 Estructura fuente
 
 ```text
-lab-book-source/
-├── mimetype
-├── META-INF/
-│   └── container.xml
-└── OEBPS/
-    ├── content.opf
-    ├── nav.xhtml
-    ├── styles.css
-    ├── Text/
-    │   ├── chapter1.xhtml
-    │   ├── chapter2.xhtml
-    │   └── chapter3.xhtml
-    └── Images/
-        ├── cover.svg
-        └── key.svg
+scripts/
+└── lab-book-source/
+    ├── mimetype
+    ├── META-INF/
+    │   └── container.xml
+    └── OEBPS/
+        ├── content.opf
+        ├── nav.xhtml
+        ├── styles.css
+        ├── Text/
+        │   ├── chapter1.xhtml
+        │   ├── chapter2.xhtml
+        │   └── chapter3.xhtml
+        └── Images/
+            ├── cover.svg
+            └── key.svg
 ```
 
 ### 2.3 `mimetype`
@@ -636,7 +637,7 @@ import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 
-SOURCE = ROOT / "lab-book-source"
+SOURCE = ROOT / "scripts" / "lab-book-source"
 OUTPUT = ROOT / "assets" / "fixtures" / "lab-book.epub"
 
 REQUIRED = [
@@ -688,7 +689,7 @@ print(f"Created: {OUTPUT}")
 Comando de generación:
 
 ```bash
-python scripts/build-lab-epub.py
+python3 scripts/build-lab-epub.py
 ```
 
 Salida:
