@@ -5,10 +5,9 @@
 Versión consolidada para inicio de generación de código con Codex\
 Fecha de corte: 24 de agosto de 2026
 
-**\
-ESTADO ACTUAL\**
-Pasos 1-3 del roadmap completados. El Paso 4 es el siguiente paso de implementación.
-\
+
+ESTADO ACTUAL: Pasos 1-3 del roadmap completados. El Paso 4 es el siguiente paso de implementación.
+
 Reader Contract V1 es la única fuente de verdad técnica del lector.
 
 # 0. Resumen ejecutivo {#resumen-ejecutivo}
@@ -97,26 +96,29 @@ Flujo operativo recomendado: cambio pequeño → prueba local → validación en
 
 # 4. Arquitectura global {#arquitectura-global}
 
-App UI\
-└── Features / Screens\
-└── ReaderScreen\
-└── ReaderController\
-└── ReaderEngine\
-├── EPUBEngine\
-│ └── EPUBWebView\
-│ └── ReaderBridge ↔ WebView Bundle\
-└── TXTEngine\
-\
-Servicios desacoplados:\
-TranslationService → LocalTranslationRepository / RemoteTranslationProvider\
-SpeechService → expo-speech\
-SRSService → SM-2\
-FileStorageService → archivos físicos\
-Repositories → SQLite\
-NotificationService → expo-notifications\
-AIService → placeholder de interfaz (V2/V3)
+```text
+App UI
+└── Features / Screens
+    └── ReaderScreen
+        └── ReaderController
+            └── ReaderEngine
+                ├── EPUBEngine
+                │   ├── EPUBWebView
+                │   └── ReaderBridge ↔ WebView Bundle
+                └── TXTEngine
 
-La dirección de dependencias es descendente. Ninguna capa inferior debe importar una capa superior. EPUBEngine puede conocer la implementación WebView; ReaderController no debe conocer epub.js. La UI solo usa el contrato del lector y servicios de aplicación.
+Servicios desacoplados:
+- TranslationService  → LocalTranslationRepository / RemoteTranslationProvider
+- SpeechService       → expo-speech
+- SRSService          → SM-2
+- FileStorageService  → archivos físicos
+- Repositories        → SQLite DB (Migrations)
+- NotificationService → expo-notifications
+- AIService           → placeholder de interfaz (V2/V3)
+
+```
+
+La dirección de dependencias es descendente. Ninguna capa inferior debe importar una capa superior. `EPUBEngine` puede conocer la implementación WebView; `ReaderController` no debe conocer `epub.js`. La UI solo usa el contrato del lector y servicios de aplicación.
 
 # 5. Almacenamiento y modelo de datos {#almacenamiento-y-modelo-de-datos}
 
@@ -138,56 +140,58 @@ Reader Contract V1 v1.0 define exclusivamente el protocolo y los tipos que cruza
 
 ## 6.1 Tipos canónicos {#tipos-canónicos}
 
-export const PROTOCOL_VERSION = \'1.0\';\
-\
-export type ReaderLocation =\
-\| {\
-format: \'epub\';\
-bookId: string;\
-chapterIndex?: number;\
-chapterTitle?: string;\
-progressPercentage: number;\
-totalChapters: number;\
-cfi: string;\
-}\
-\| {\
-format: \'txt\';\
-bookId: string;\
-chapterIndex?: number;\
-chapterTitle?: string;\
-progressPercentage: number;\
-totalChapters: number;\
-paragraphIndex: number;\
-charOffset: number;\
-};\
-\
-export interface SelectionRect {\
-x: number;\
-y: number;\
-width: number;\
-height: number;\
-coordinateSpace: \'webview\';\
-}\
-\
-export interface TextSelection {\
-selectedText: string;\
-rawText: string;\
-selectionType: \'word\' \| \'phrase\' \| \'sentence\';\
-sentenceContext: string;\
-paragraphContext?: string;\
-bookId: string;\
-chapterIndex: number;\
-location: ReaderLocation;\
-range: { startOffset: number; endOffset: number };\
-rect: SelectionRect;\
-}\
-\
-export interface ReaderMessage\<T extends string, P\> {\
-type: T;\
-requestId: string;\
-protocolVersion: string;\
-payload: P;\
+```typescript
+export const PROTOCOL_VERSION = '1.0';
+
+export type ReaderLocation =
+  | {
+      format: 'epub';
+      bookId: string;
+      chapterIndex?: number;
+      chapterTitle?: string;
+      progressPercentage: number;
+      totalChapters: number;
+      cfi: string;
+    }
+  | {
+      format: 'txt';
+      bookId: string;
+      chapterIndex?: number;
+      chapterTitle?: string;
+      progressPercentage: number;
+      totalChapters: number;
+      paragraphIndex: number;
+      charOffset: number;
+    };
+
+export interface SelectionRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  coordinateSpace: 'webview';
 }
+
+export interface TextSelection {
+  selectedText: string;
+  rawText: string;
+  selectionType: 'word' | 'phrase' | 'sentence';
+  sentenceContext: string;
+  paragraphContext?: string;
+  bookId: string;
+  chapterIndex: number;
+  location: ReaderLocation;
+  range: { startOffset: number; endOffset: number };
+  rect: SelectionRect;
+}
+
+export interface ReaderMessage<T P extends string,> {
+  type: T;
+  requestId: string;
+  protocolVersion: string;
+  payload: P;
+}
+```
 
 Semántica de requestId: en comandos Native → Web identifica la solicitud y permite correlación con la confirmación o timeout. En eventos espontáneos Web → Native actúa como eventId de trazabilidad. Los eventos no crean una solicitud pendiente ni esperan una respuesta.
 
@@ -219,27 +223,29 @@ protocolVersion es obligatorio en todos los mensajes. Un mismatch se reporta exp
 
 ## 6.4 Estados y errores {#estados-y-errores}
 
-export type ReaderStatus =\
-\| \'idle\'\
-\| \'loading\'\
-\| \'ready\'\
-\| \'reading\'\
-\| \'selecting\'\
-\| \'translation_open\'\
-\| \'paused\'\
-\| \'error\';\
-\
-export const READER_ERROR_CODES = \[\
-\'EPUB_LOAD_FAILED\',\
-\'EPUB_INVALID\',\
-\'EPUB_RENDER_FAILED\',\
-\'TXT_LOAD_FAILED\',\
-\'TXT_ENCODING_ERROR\',\
-\'READER_INITIALIZATION_FAILED\',\
-\'LOCATION_INVALID\',\
-\'REQUEST_TIMEOUT\',\
-\'PROTOCOL_VERSION_MISMATCH\',\
-\] as const;
+```typescript
+export type ReaderStatus =
+  | 'idle'
+  | 'loading'
+  | 'ready'
+  | 'reading'
+  | 'selecting'
+  | 'translation_open'
+  | 'paused'
+  | 'error';
+
+export const READER_ERROR_CODES = [
+  'EPUB_LOAD_FAILED',
+  'EPUB_INVALID',
+  'EPUB_RENDER_FAILED',
+  'TXT_LOAD_FAILED',
+  'TXT_ENCODING_ERROR',
+  'READER_INITIALIZATION_FAILED',
+  'LOCATION_INVALID',
+  'REQUEST_TIMEOUT',
+  'PROTOCOL_VERSION_MISMATCH',
+] as const;
+```
 
 No se agrega PAGINATING como estado persistente. Es una actividad interna de renderizado.
 
@@ -269,51 +275,57 @@ No se agrega PAGINATING como estado persistente. Es una actividad interna de ren
 
 EPUB se renderiza dentro de react-native-webview usando epub.js. JSZip y epub.js deben existir como assets locales del proyecto y sus contenidos se inyectan en el HTML del WebView. El runtime no contiene referencias http(s) a CDNs ni fallback remoto.
 
-assets/\
-libs/\
-epub.min.js\
-jszip.min.js\
-fixtures/\
-lab-book.epub\
-demo-books/\
-beginner/\
-elementary/\
-intermediate/\
-\
-src/reader/engines/webview/epub-webview-bundle/\
-index.html\
-bridge-client.ts\
-selection-handler.ts // cuando corresponda al paso 6
+```text
+assets/
+├── libs/
+│   ├── epub.min.js
+│   └── jszip.min.js
+├── fixtures/
+│   └── lab-book.epub
+└── demo-books/
+    ├── beginner/
+    ├── elementary/
+    └── intermediate/
+
+src/reader/engines/webview/epub-webview-bundle/
+├── index.html
+├── bridge-client.ts
+└── selection-handler.ts # cuando corresponda al paso 6
+```
 
 El bundle del WebView se compone a partir de strings/recursos locales. El HTML final debe contener, en este orden conceptual: HTML base → JSZip local → epub.js local → bridge client local → handlers locales necesarios. No se usa \<script src=\"https://\...\"\>.
 
-const finalHtml = HTML_TEMPLATE\
-.replace(\'/\* JSZIP_PLACEHOLDER \*/\', jszipSource)\
-.replace(\'/\* EPUBJS_PLACEHOLDER \*/\', epubSource)\
-.replace(\'/\* BRIDGE_CLIENT_PLACEHOLDER \*/\', bridgeClientSource);\
-\
-\<WebView\
-source={{ html: finalHtml, baseUrl: \'\' }}\
-javaScriptEnabled\
-domStorageEnabled\
-scrollEnabled={false}\
-onMessage={handleMessage}\
-/\>
+```typescript
+const finalHtml = HTML_TEMPLATE
+  .replace('/* JSZIP_PLACEHOLDER */', jszipSource)
+  .replace('/* EPUBJS_PLACEHOLDER */', epubSource)
+  .replace('/* BRIDGE_CLIENT_PLACEHOLDER */', bridgeClientSource);
+
+<WebView
+  source={{ html: finalHtml, baseUrl: '' }}
+  javaScriptEnabled
+  domStorageEnabled
+  scrollEnabled={false}
+  onMessage={handleMessage}
+/>
+```
 
 Para el prototipo actual, el EPUB puede transportarse temporalmente como Base64 mediante INIT_BOOK para aislar el riesgo de integración. Esta decisión queda limitada al flujo de prototipo y debe validarse para libros grandes antes de convertirla en comportamiento definitivo de producción.
 
 # 8. ReaderBridge --- especificación de implementación {#readerbridge-especificación-de-implementación}
 
-class ReaderBridge {\
-// 1. Mantiene referencia al WebView.\
-// 2. Genera requestId para comandos.\
-// 3. Registra PendingRequest en RequestTracker.\
-// 4. Encola comandos mientras el WebView no está listo.\
-// 5. Envía JSON por postMessage().\
-// 6. Resuelve/rechaza por la confirmación correlacionada.\
-// 7. Expone suscripciones a eventos espontáneos.\
-// 8. Limpia listeners y timeouts al desmontarse.\
+```typescript
+class ReaderBridge {
+// 1. Mantiene referencia al WebView.
+// 2. Genera requestId para comandos.
+// 3. Registra PendingRequest en RequestTracker.
+// 4. Encola comandos mientras el WebView no está listo.
+// 5. Envía JSON por postMessage().
+// 6. Resuelve/rechaza por la confirmación correlacionada.
+// 7. Expone suscripciones a eventos espontáneos.
+// 8. Limpia listeners y timeouts al desmontarse.
 }
+```
 
 La implementación concreta puede utilizar una cola y un RequestTracker separados como archivos internos, pero no puede cambiar la semántica del contrato. ReaderBridge no es un bus general de la aplicación: su única responsabilidad es la frontera del lector.
 
@@ -325,14 +337,16 @@ El handler debe calcular selectedText, rawText, selectionType, sentenceContext, 
 
 Stub permitido para Codex:
 
-export interface SelectionHandler {\
-attach(): void;\
-detach(): void;\
-setBookContext(bookId: string, chapterIndex: number): void;\
-}\
-\
-// TODO(step-6): implementar extracción DOM y contexto.\
+```typescript
+export interface SelectionHandler {
+  attach(): void;
+  detach(): void;
+  setBookContext(bookId: string, chapterIndex: number): void;
+}
+
+// TODO(step-6): implementar extracción DOM y contexto.
 // El archivo puede compilar aunque el comportamiento real aún no exista.
+```
 
 # 10. Persistencia de progreso y CFI --- paso 7 pendiente {#persistencia-de-progreso-y-cfi-paso-7-pendiente}
 
@@ -340,12 +354,14 @@ La persistencia se ejecutará mediante debounce/throttle y nunca en cada scroll.
 
 EPUB persistirá cfi como ubicación primaria. TXT utilizará una representación específica que se definirá durante el paso 8. range.startOffset/endOffset nunca sustituye a ReaderLocation.
 
-export interface ProgressPersistence {\
-save(location: ReaderLocation, extra?: { readingTimeSeconds?: number }): Promise\<void\>;\
-flush(): Promise\<void\>;\
-}\
-\
+```typescript
+export interface ProgressPersistence {
+  save(location: ReaderLocation, extra?: { readingTimeSeconds?: number }): Promise<void>;
+  flush(): Promise<void>;
+}
+
 // TODO(step-7): conectar con BookProgressRepository y ciclo de vida de la app.
+```
 
 # 11. TXTEngine --- siguiente fase después del bridge {#txtengine-siguiente-fase-después-del-bridge}
 
@@ -353,15 +369,17 @@ TXTEngine es deliberadamente un módulo posterior. Debe normalizar UTF-8, UTF-16
 
 El tipo ReaderLocation para TXT ya está definido. La representación persistente final de charOffset/paragraphIndex deberá validarse durante este paso y quedar documentada antes de integrarse a producción.
 
-export interface TXTEngineContract {\
-load(uri: string): Promise\<void\>;\
-getLocation(): ReaderLocation;\
-goToLocation(location: Extract\<ReaderLocation, { format: \'txt\' }\>): Promise\<void\>;\
-next(): Promise\<void\>;\
-previous(): Promise\<void\>;\
-}\
-\
+```typescript
+export interface TXTEngineContract {
+  load(uri: string): Promise<void>;
+  getLocation(): ReaderLocation;
+  goToLocation(location: Extract<ReaderLocation, { format: 'txt' }>): Promise<void>;
+  next(): Promise<void>;
+  previous(): Promise<void>;
+}
+
 // TODO(step-8): implementar normalización y estrategia de persistencia TXT.
+```
 
 # 12. Servicios de aplicación {#servicios-de-aplicación}
 
@@ -369,36 +387,42 @@ previous(): Promise\<void\>;\
 
 V1 requiere un servicio mínimo. El lector no conoce proveedores ni repositorios. La implementación se compone de TranslationService → LocalTranslationRepository y, cuando proceda, RemoteTranslationProvider. La traducción online es opcional y nunca rompe la lectura local.
 
-export interface TranslationService {\
-translate(input: {\
-text: string;\
-sourceLanguage: string;\
-targetLanguage: string;\
-context?: string;\
-}): Promise\<TranslationResult\[\]\>;\
+```typescript
+export interface TranslationService {
+  translate(input: {
+    text: string;
+    sourceLanguage: string;
+    targetLanguage: string;
+    context?: string;
+  }): Promise<TranslationResult[]>;
 }
+```
 
 ## 12.2 SpeechService {#speechservice}
 
-export interface SpeechService {\
-speak(text: string, language: string): Promise\<void\>;\
-stop(): Promise\<void\>;\
-}\
-\
-// Implementación V1: adapter sobre expo-speech.\
+```typescript
+export interface SpeechService {
+  speak(text: string, language: string): Promise<void>;
+  stop(): Promise<void>;
+}
+
+// Implementación V1: adapter sobre expo-speech.
 // La disponibilidad real de voces depende del sistema operativo.
+```
 
 ## 12.3 AIService {#aiservice}
 
 AIService es únicamente una interfaz/placeholder en V1. No se implementa lógica de IA ni llamadas a proveedores en el cliente. Cuando exista IA, el flujo será App → AI Service → Backend/API → proveedor de IA. Nunca se embeben claves secretas en la app.
 
-export interface AIService {\
-explain?:(input: unknown) =\> Promise\<unknown\>;\
-contextualTranslate?:(input: unknown) =\> Promise\<unknown\>;\
-}\
-\
-// V1: adapter stub. No-op o implementación que lance\
+```typescript
+export interface AIService {
+  explain?: (input: unknown) => Promise<unknown>;
+  contextualTranslate?: (input: unknown) => Promise<unknown>;
+}
+
+// V1: adapter stub. No-op o implementación que lance
 // un error controlado de funcionalidad no disponible.
+```
 
 # 13. Módulos funcionales V1 {#módulos-funcionales-v1}
 
@@ -545,9 +569,9 @@ Cada tarea enviada a Codex debe indicar explícitamente los siguientes campos:
 
 - **Objetivo:** Implementar exclusivamente las funcionalidades requeridas por el paso actual.
 - **Paso del roadmap:** [Número y nombre del paso actual].
-- **Fuente de verdad:** `PROJECT_SPEC.md` (especialmente Reader Contract V1, sección 6) y `docs/PROJECT_CONTEXT.md`.
+- **Fuente de verdad:** `docs/PROJECT_SPEC.md` (especialmente Reader Contract V1, sección 6) y `docs/PROJECT_CONTEXT.md`.
 - **Archivos que puede crear o modificar:** [Lista explícita de archivos o carpetas permitidas].
-- **Archivos que NO debe modificar:** `PROJECT_SPEC.md`, `docs/PROJECT_CONTEXT.md`, ni nombres de comandos/eventos o payloads contractuales.
+- **Archivos que NO debe modificar:** `docs/PROJECT_SPEC.md`, `docs/PROJECT_CONTEXT.md`, `AGENTS.md`, `docs/INDEX.md` ni nombres de comandos/eventos o payloads contractuales.
 - **Restricciones y reglas de desarrollo:**
   - No avanzar automáticamente al siguiente paso del roadmap ni introducir funcionalidades de pasos posteriores (como SQLite, IA, traducción, TTS o highlights).
   - No introducir dependencias remotas o CDNs.
@@ -596,30 +620,32 @@ Cada tarea enviada a Codex debe indicar explícitamente los siguientes campos:
 
 # 20. Instrucciones para cualquier IA o desarrollador que reciba este documento {#instrucciones-para-cualquier-ia-o-desarrollador-que-reciba-este-documento}
 
-Este documento se debe tratar como el estado consolidado del proyecto a fecha 24 de agosto de 2026. La regla principal es no inferir que fragmentos históricos del documento anterior siguen vigentes. Los bloques marcados como ejemplo, stub o pendiente no constituyen funcionalidades implementadas.
+Este documento constituye la autoridad global sobre producto, arquitectura, estado y reglas no negociables del proyecto Lectorium. Se debe tratar como el estado consolidado del proyecto. Los bloques marcados como ejemplo, stub o pendiente no constituyen funcionalidades implementadas.
 
-Este documento constituye la fuente de verdad técnica del proyecto.
+Para la ejecución operativa, este documento trabaja en conjunto con:
+
+1. `AGENTS.md` — Reglas operativas, fronteras y comportamiento para agentes de IA (Codex).
+2. `docs/INDEX.md` — Índice del sistema de registro y mapa de navegación rápida por pasos del roadmap.
+3. `docs/PROJECT_CONTEXT.md` — Detalle técnico complementario de los Pasos 3 y 4.
 
 Antes de modificar el código:
 
-1. Leer PROJECT_SPEC.md completo.
-2. Leer docs/PROJECT_CONTEXT.md.
-3. Identificar el estado actual del roadmap.
-4. Respetar las dependencias y bloqueos establecidos.
+1. Consultar `AGENTS.md` para aplicar las reglas operativas y fronteras arquitectónicas.
+2. Consultar `docs/INDEX.md` §3 (*Mapeo Rápido por Paso del Roadmap*) para identificar la lectura dirigida requerida sin cargar documentos completos.
+3. Abrir únicamente los archivos y secciones específicos indicados por el índice para el paso activo.
+4. Identificar el estado actual del roadmap y respetar estrictamente las dependencias y bloqueos.
 5. No implementar funcionalidades pertenecientes a pasos posteriores.
-6. No introducir dependencias, protocolos o arquitecturas que contradigan este documento sin autorización.
+6. No introducir dependencias externas (cumplir política Local-First), protocolos alternos ni arquitecturas que contradigan este documento.
+7. Respetar las rutas de herramientas: los scripts de compilación y sus insumos descompilados residen en `scripts/` (ej. `scripts/build-lab-epub.py` y `scripts/lab-book-source/`).
 
 ## Estado actual
 
-El Paso 1 - Reader Contract V1 está completado.
+* **Paso 1 — Reader Contract V1:** Completado.
+* **Paso 2 — Expo + estructura:** Completado.
+* **Paso 3 — EPUB de laboratorio:** Completado y verificado (script reproducible en `scripts/` y fixture generado en `assets/fixtures/lab-book.epub`).
+* **Paso 4 — Prototipo técnico mínimo:** Siguiente paso oficial de implementación (requiere `assets/libs/{epub.min.js,jszip.min.js}` locales).
 
-El Paso 2 - Expo + estructura está completado.
-
-El Paso 3 - EPUB de laboratorio está completado.
-
-El Paso 4 - Prototipo técnico mínimo es el siguiente paso oficial de implementación.
-
-ReaderBridge y las funcionalidades posteriores no deben implementarse todavía.
+*ReaderBridge* completo, selección de texto, persistencia y funcionalidades del Paso 5 en adelante no deben implementarse todavía.
 
 # Apéndice A. Mapa de responsabilidades del lector {#apéndice-a.-mapa-de-responsabilidades-del-lector}
 
